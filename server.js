@@ -18,12 +18,20 @@ app.post("/validate-key", (req, res) => {
 });
 
 // Добавление ключа (для админа)
-app.post("/add-key", (req, res) => {
+app.post("/validate-key", (req, res) => {
     const { key } = req.body;
     if (!key) return res.status(400).json({ error: "Ключ не указан" });
 
-    fs.appendFileSync(KEYS_FILE, key + "\n");
-    res.json({ success: true });
+    let keys = fs.readFileSync(KEYS_FILE, "utf-8").split("\n").map(k => k.trim());
+    
+    if (keys.includes(key)) {
+        // Удаляем ключ из массива
+        keys = keys.filter(k => k !== key);
+        fs.writeFileSync(KEYS_FILE, keys.join("\n")); // Обновляем файл
+        return res.json({ valid: true });
+    }
+    
+    res.json({ valid: false });
 });
 
 const PORT = process.env.PORT || 3000;
