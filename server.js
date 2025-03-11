@@ -49,6 +49,11 @@ app.delete("/delete-key", (req, res) => {
     let keys = readKeys();
     if (!keys.includes(key)) return res.status(400).json({ error: "Ключ не найден" });
 
-    keys = keys.filter(k => k !== key);
+        keys = keys.filter(k => k !== key);
     writeKeys(keys);
-    res.json({ success: t
+    res.json({ success: true, message: "Ключ удален" });
+});
+
+// Запуск сервера
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Сервер работает на порту ${PORT}`));
