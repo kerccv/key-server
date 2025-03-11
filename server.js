@@ -64,6 +64,22 @@ app.get("/list-keys", (req, res) => {
     res.json({ success: true, message: "Список ключей выведен в консоль" });
 });
 
+// Добавляем маршрут для удаления ключа после его применения
+app.post("/apply-key", (req, res) => {
+    const { key } = req.body;
+    if (!key) return res.status(400).json({ error: "Ключ не указан" });
+
+    let keys = readKeys();
+    if (!keys.includes(key)) return res.status(400).json({ error: "Ключ не найден" });
+
+    // Удаляем ключ из списка
+    keys = keys.filter(k => k !== key);
+    writeKeys(keys);
+
+    res.json({ success: true, message: "Ключ применен и удален с сервера" });
+});
+
+
 // Запуск сервера
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Сервер работает на порту ${PORT}`));
