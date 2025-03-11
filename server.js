@@ -49,9 +49,19 @@ app.delete("/delete-key", (req, res) => {
     let keys = readKeys();
     if (!keys.includes(key)) return res.status(400).json({ error: "Ключ не найден" });
 
-        keys = keys.filter(k => k !== key);
+    keys = keys.filter(k => k !== key);
     writeKeys(keys);
     res.json({ success: true, message: "Ключ удален" });
+});
+
+// Новый маршрут для вывода всех ключей в консоль
+app.get("/list-keys", (req, res) => {
+    const keys = readKeys();
+    console.log("Список ключей:");
+    keys.forEach((key, index) => {
+        console.log(`${index + 1}. ${key}`);
+    });
+    res.json({ success: true, message: "Список ключей выведен в консоль" });
 });
 
 // Запуск сервера
